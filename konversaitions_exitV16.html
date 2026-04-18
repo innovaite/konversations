@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KonversAItions — Exit Readiness. Maximum Value.</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A192F; --teal:#006a68; --lteal:#0D9997;
+  --gold:#f5be4f; --surface:#f6fafe; --surf-low:#EEF4FB;
+  --surf-high:#FFFFFF; --on-navy:rgba(255,255,255,0.88);
+  --on-navy-muted:rgba(255,255,255,0.42); --on-navy-faint:rgba(255,255,255,0.18);
+  --text:#0A192F; --muted:#4A6080;
+  --gold-chip:rgba(245,190,79,0.10); --shadow:rgba(10,25,47,0.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+.fade.in{opacity:1;transform:none;}
+.d1{transition-delay:.12s;}.d2{transition-delay:.24s;}.d3{transition-delay:.36s;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,25,47,0.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:64px;transition:box-shadow .3s;}
+.logo{font-family:'Newsreader',serif;font-size:1.4rem;font-weight:600;font-style:italic;color:var(--on-navy);text-decoration:none;}
+.logo em{color:var(--teal);font-style:normal;}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{color:var(--on-navy-muted);text-decoration:none;font-size:0.74rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--lteal);}
+.nav-back{color:var(--on-navy-muted);text-decoration:none;font-size:0.74rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;display:flex;align-items:center;gap:.4rem;}
+.nav-back:hover{color:var(--lteal);}
+.nav-cta{background:var(--teal);color:#fff;padding:.48rem 1.4rem;border-radius:6px;font-size:0.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);}
+.nav-cta:hover{background:var(--lteal);}
+
+/* HERO */
+.hero{min-height:100vh;background:radial-gradient(ellipse at 72% 45%, #0D2A4A 0%, var(--navy) 55%, #040E1C 100%);display:flex;flex-direction:column;justify-content:center;padding:130px 6% 100px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:0;left:0;width:44%;height:100%;background:repeating-linear-gradient(52deg,transparent,transparent 52px,rgba(0,106,104,0.022) 52px,rgba(0,106,104,0.022) 53px);pointer-events:none;}
+.hero::before{content:'';position:absolute;top:0;left:44%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(245,190,79,0.15) 40%,transparent);pointer-events:none;}
+.hero-ey{font-size:0.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:1.8rem;display:flex;align-items:center;gap:.7rem;}
+.hero-ey::before{content:'';display:block;width:28px;height:1px;background:var(--teal);}
+.hero h1{font-family:'Newsreader',serif;font-size:clamp(3.2rem,6.5vw,5.8rem);font-weight:300;line-height:1.04;color:var(--on-navy);max-width:820px;margin-bottom:1.8rem;}
+.hero h1 em{font-style:italic;color:rgba(255,255,255,0.38);}
+.hero-sub{font-size:1.05rem;font-weight:300;line-height:1.78;color:var(--on-navy-muted);max-width:520px;margin-bottom:3rem;}
+.hero-sub strong{color:rgba(255,255,255,0.8);font-weight:400;}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;}
+.btn-teal{background:var(--teal);color:#fff;padding:.9rem 2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);}
+.btn-teal:hover{background:var(--lteal);}
+.btn-ghost{background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);color:rgba(255,255,255,0.58);padding:.9rem 2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-ghost:hover{background:rgba(0,106,104,0.18);color:var(--lteal);}
+
+/* SHARED */
+.sec{padding:6.5rem 6%;}
+.ey{display:inline-block;font-size:0.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 10px;margin-bottom:1.1rem;}
+.h2{font-family:'Newsreader',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:400;line-height:1.15;color:var(--navy);margin-bottom:1rem;}
+.sub{font-size:0.95rem;line-height:1.8;color:var(--muted);max-width:560px;}
+.h2-wht{color:var(--on-navy);}
+.sub-wht{color:var(--on-navy-muted);}
+
+/* TENSION */
+.tension{background:var(--navy);display:grid;grid-template-columns:1fr 1fr 1fr;}
+.ti{padding:3rem 4%;text-align:center;transition:background .3s;}
+.ti:nth-child(2){background:rgba(255,255,255,0.025);}
+.ti:hover{background:rgba(0,106,104,0.06);}
+.ti-q{font-family:'Newsreader',serif;font-size:1.08rem;font-style:italic;font-weight:400;color:var(--on-navy-muted);line-height:1.55;margin-bottom:.7rem;}
+.ti-a{font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+
+/* GAP SECTION */
+.gap{background:var(--surf-high);}
+.gap-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:4rem;}
+.gap-left p{font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;}
+.gap-left p strong{color:var(--text);font-weight:500;}
+.gap-cards{display:flex;flex-direction:column;gap:1px;}
+.gc-where{background:var(--surf-low);padding:2rem;border-radius:8px 8px 0 0;}
+.gc-could{background:var(--navy);padding:2rem;}
+.gc-bar{background:var(--teal);padding:1.1rem 2rem;border-radius:0 0 8px 8px;}
+.gc-label{font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.7rem;}
+.gc-label-wht{font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,190,79,0.7);margin-bottom:.7rem;}
+.gc-where p{font-size:0.9rem;line-height:1.75;color:var(--muted);}
+.gc-could p{font-size:0.9rem;line-height:1.75;color:rgba(255,255,255,0.6);}
+.gc-bar p{font-size:0.85rem;font-weight:500;color:#fff;line-height:1.5;}
+
+/* THREE PILLARS */
+.pillars{background:var(--surf-low);}
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;}
+.pc{background:var(--surf-high);padding:2.5rem 2rem;border-radius:6px;box-shadow:0 8px 48px var(--shadow);transition:box-shadow .25s,transform .25s;}
+.pc:hover{box-shadow:0 16px 64px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.pc-num{font-family:'Newsreader',serif;font-size:2.4rem;font-weight:300;color:var(--gold);opacity:0.55;line-height:1;margin-bottom:1.3rem;}
+.pc-title{font-size:1rem;font-weight:500;color:var(--navy);margin-bottom:.65rem;}
+.pc-body{font-size:0.85rem;line-height:1.75;color:var(--muted);}
+
+/* HOW WE WORK */
+.how{background:var(--surface);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem;}
+.step{background:var(--surf-high);padding:2.2rem 1.8rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);transition:box-shadow .25s,transform .25s;}
+.step:hover{box-shadow:0 8px 48px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.step-n{display:inline-flex;align-items:center;gap:.4rem;font-size:0.64rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;margin-bottom:1.2rem;}
+.step h3{font-size:0.96rem;font-weight:500;color:var(--navy);margin-bottom:.6rem;}
+.step p{font-size:0.83rem;line-height:1.7;color:var(--muted);}
+
+/* WHY US */
+.why{background:var(--navy);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3.5rem;}
+.wc{background:rgba(255,255,255,0.035);padding:2rem 1.6rem;border-radius:6px;transition:background .2s;}
+.wc:hover{background:rgba(0,106,104,0.12);}
+.wc-icon{margin-bottom:1.1rem;}
+.wc-icon svg{width:20px;height:20px;stroke:var(--teal);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.wc h4{font-size:0.92rem;font-weight:500;color:var(--on-navy);margin-bottom:.55rem;}
+.wc p{font-size:0.82rem;line-height:1.72;color:var(--on-navy-muted);}
+
+/* OUTCOMES */
+.proof{background:var(--surf-low);}
+
+/* WHO WE SERVE */
+.personas{background:var(--surface);padding:6.5rem 6%;}
+.ptabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid rgba(10,25,47,0.10);margin-top:3rem;}
+.ptab{padding:.72rem 1.3rem;font-size:0.73rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;font-family:'Inter',sans-serif;transition:color .2s,border-color .2s;}
+.ptab.on{color:var(--teal);border-bottom-color:var(--teal);}
+.ptab:hover:not(.on){color:var(--navy);}
+.pcontent{display:none;padding:3rem 0;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.pcontent.on{display:grid;}
+.pc-left h3{font-family:'Newsreader',serif;font-size:1.7rem;font-weight:400;color:var(--navy);margin-bottom:.9rem;line-height:1.3;}
+.pc-left p{font-size:0.88rem;line-height:1.8;color:var(--muted);}
+.plist{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-top:.5rem;}
+.plist li{font-size:0.85rem;color:var(--text);line-height:1.5;padding-left:1rem;position:relative;}
+.plist li::before{content:'';position:absolute;left:0;top:.58em;width:5px;height:1px;background:var(--gold);}
+
+/* PARTNERSHIPS */
+.partners{background:var(--navy);padding:6.5rem 6%;}
+.partner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.pg{background:rgba(255,255,255,0.035);padding:2.2rem 2rem;border-radius:6px;transition:background .2s;}
+.pg:hover{background:rgba(0,106,104,0.1);}
+.pg-cat{font-size:0.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,190,79,0.7);margin-bottom:.7rem;}
+.pg h4{font-size:0.95rem;font-weight:500;color:var(--on-navy);margin-bottom:.6rem;font-family:'Newsreader',serif;line-height:1.3;}
+.pg p{font-size:0.82rem;line-height:1.68;color:var(--on-navy-muted);}
+.partners-cta{margin-top:2.5rem;}
+
+/* CTA */
+.cta{background:var(--surface);padding:9rem 6%;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.cta .h2{max-width:680px;text-align:center;}
+.cta p{font-size:0.95rem;line-height:1.8;color:var(--muted);max-width:500px;margin:1.2rem 0 2.8rem;}
+.cta-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-dark{background:var(--navy);color:#fff;padding:.9rem 2.2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:background .2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}
+.btn-dark:hover{background:var(--teal);}
+.btn-line{background:transparent;color:var(--navy);padding:.9rem 2.2rem;border-radius:6px;border:1px solid rgba(10,25,47,0.15);font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-line:hover{border-color:var(--teal);color:var(--teal);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:2.8rem 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);}
+.flogo{font-family:'Newsreader',serif;font-size:1.2rem;font-weight:600;font-style:italic;color:var(--on-navy);text-decoration:none;}
+.flogo em{color:var(--teal);font-style:normal;}
+.flinks{display:flex;gap:2rem;list-style:none;}
+.flinks a{font-size:0.72rem;color:var(--on-navy-faint);text-decoration:none;transition:color .2s;}
+.flinks a:hover{color:var(--lteal);}
+.fcopy{font-size:0.7rem;color:var(--on-navy-faint);}
+
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .tension{grid-template-columns:1fr;}
+  .ti:nth-child(2){background:transparent;}
+  .gap-grid{grid-template-columns:1fr;gap:3rem;}
+  .pillar-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .why-grid{grid-template-columns:1fr;}
+  .pcontent.on{grid-template-columns:1fr;gap:2rem;}
+  .partner-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="logo">Konvers<em>AI</em>tions</a>
+  <ul class="nav-links">
+    <li><a href="#gap">The Gap</a></li>
+    <li><a href="#how">How We Work</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#clients">Who We Serve</a></li>
+    <li><a href="/">← AI & Growth</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Start the KonversAItion</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-ey fade">Exit Readiness · Value Acceleration · Post-Acquisition Success</p>
+  <h1 class="fade d1">
+    The exit<br>
+    you deserve<br>
+    <em>is built long before<br>anyone shows up.</em>
+  </h1>
+  <p class="hero-sub fade d2">
+    There's what your company is worth today.<br>
+    <strong>And what it could be worth. We close that gap.</strong><br><br>
+    Value isn't negotiated at the closing table — it's built, or lost, in the years before anyone shows up. We work with companies that have decided to arrive at full value. Not by accident. By design.
+  </p>
+  <div class="hero-btns fade d3">
+    <a href="#gap" class="btn-teal">See How We Work</a>
+    <a href="#partners" class="btn-ghost">Explore Strategic Partnerships</a>
+  </div>
+</section>
+
+<!-- TENSION -->
+<div class="tension">
+  <div class="ti fade">
+    <p class="ti-q">"We know what to fix. We just don't have the people, time, or bandwidth to fix it."</p>
+    <p class="ti-a">That's exactly why we exist.</p>
+  </div>
+  <div class="ti fade d1">
+    <p class="ti-q">"Every team is working hard. Nobody is working together."</p>
+    <p class="ti-a">Silos kill companies quietly. We break them.</p>
+  </div>
+  <div class="ti fade d2">
+    <p class="ti-q">"We're growing fast — but we're scaling chaos, not a company."</p>
+    <p class="ti-a">Growth without the right structure doesn't last. We build both — for your company.</p>
+  </div>
+</div>
+
+<!-- THE GAP -->
+<section class="sec gap" id="gap">
+  <div class="gap-grid">
+    <div class="fade">
+      <p class="ey">The Gap</p>
+      <h2 class="h2">The companies that exit well didn't get lucky.<br>They decided to be the kind of company that does.</h2>
+      <p>Most companies approaching an exit are closer than they think. The gap isn't talent. It isn't effort. It's the absence of the right systems — built in the right order, at the right time — by people who have been in those seats before.</p>
+      <p>Every month without those systems is a month of compounding value that disappears. <strong>Small improvements in the right areas don't add up. They multiply.</strong></p>
+    </div>
+    <div class="fade d1">
+      <div class="gc-where">
+        <p class="gc-label">Where you are</p>
+        <p>Revenue growing but not compounding — upsell, cross-sell, and partner channels untapped. Teams in silos, making decisions that optimize their function but not the company. AI initiatives everywhere, execution happening nowhere. A business that depends on you to run — and can't scale without you.</p>
+      </div>
+      <div class="gc-could">
+        <p class="gc-label-wht">Where you could be</p>
+        <p>A company that has become what it always had the potential to be. Recurring revenue compounding through every channel. Teams that don't need the founder in every room. AI deployed as a structural advantage — not a talking point. A business that attracts serious buyers, commands a serious premium, and sustains its value long after you've moved on.</p>
+      </div>
+      <div class="gc-bar">
+        <p>Every month that gap stays open, value compounds in the wrong direction. We reverse that.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE PILLARS -->
+<section class="sec pillars" id="pillars">
+  <p class="ey fade">What We Do</p>
+  <h2 class="h2 fade d1">Three levers. One outcome.</h2>
+  <p class="sub fade d2">Every engagement touches revenue, AI, and operations — because buyers evaluate all three, and weakness in any one costs you at the table.</p>
+
+  <div class="pillar-grid">
+    <div class="pc fade">
+      <div class="pc-num">01</div>
+      <p class="pc-title">Revenue Growth</p>
+      <p class="pc-body">Premium buyers pay for revenue they can rely on — not revenue that requires the founder to generate it. We build the recurring model, activate the upsell channels, and create the go-to-market repeatability that transforms a revenue line from a dependency into a system.</p>
+    </div>
+    <div class="pc fade d1">
+      <div class="pc-num">02</div>
+      <p class="pc-title">AI & Technology</p>
+      <p class="pc-body">Buyers are paying a premium for companies where AI is embedded in operations — not bolted on as a feature. We assess, implement, and help you demonstrate AI-driven efficiency with proof, not promises. Technology that solves real problems and shows up in the numbers a buyer cares about.</p>
+    </div>
+    <div class="pc fade d2">
+      <div class="pc-num">03</div>
+      <p class="pc-title">Operations & Scale</p>
+      <p class="pc-body">The companies that command the highest multiples have one thing in common: they run without the owner in every room. We build the systems, the team structures, and the reporting that make your company demonstrably scalable — the kind of business a buyer looks at and sees a platform, not a person.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK -->
+<section class="sec how" id="how">
+  <p class="ey fade">The Journey</p>
+  <h2 class="h2 fade d1">From where you are<br>to the exit you deserve.</h2>
+  <p class="sub fade d2">Every engagement begins with honesty about where you are. Not a pitch — a diagnosis. What we find shapes everything that follows.</p>
+
+  <div class="how-grid">
+    <div class="step fade">
+      <p class="step-n">Step 01</p>
+      <h3>Understand where you are — honestly</h3>
+      <p>Most companies have a version of themselves they believe in and a version the data tells. We find the gap between them — in revenue, AI, and operations — and tell you the truth about what it costs you every month it stays open.</p>
+    </div>
+    <div class="step fade d1">
+      <p class="step-n">Step 02</p>
+      <h3>Build what buyers pay for</h3>
+      <p>We embed and execute — not advise from a distance. Every initiative is a system: repeatable, measurable, and independent of any one person. We build the revenue infrastructure, the AI stack, and the operational model that a buyer looks at and sees durability — not dependence.</p>
+    </div>
+    <div class="step fade d2">
+      <p class="step-n">Step 03</p>
+      <h3>Arrive at full strength</h3>
+      <p>The companies that walk into a transaction with confidence are the ones that did the work before it mattered. When it's time to transact, your business is prepared — operationally sound, commercially proven, and AI-enabled. What buyers find confirms the valuation. Nothing surprises anyone.</p>
+    </div>
+    <div class="step fade d3">
+      <p class="step-n">Step 04</p>
+      <h3>Protect what you built</h3>
+      <p>A successful exit isn't a signed agreement. It's a business that retains its people, keeps its customers, and maintains its momentum after you hand over the keys. We stay through the transition — because the outcome we measure is what happens after, not before.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="sec why">
+  <p class="ey fade" style="color:var(--teal);">Why KonversAItions</p>
+  <h2 class="h2 h2-wht fade d1">We exist because most companies<br>are worth more than they're getting credit for.</h2>
+  <p class="sub sub-wht fade d2">The gap between what a company is worth and what it transacts for is almost always a systems problem — not a market problem. We close it. That's why we exist. That's the only thing we do.</p>
+
+  <div class="why-grid">
+    <div class="wc fade">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <h4>We've been in the seat</h4>
+      <p>Operational leader. Revenue leader. Technology leader at a public AI company. We don't advise from a distance. We know what it feels like to make the decisions your leadership team is making right now — and what the downstream consequences are.</p>
+    </div>
+    <div class="wc fade d1">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+      <h4>Every system we build has an exit in mind</h4>
+      <p>We filter every recommendation through one question: does this make the company more valuable and more demonstrably sellable? Not someday. In your window. Systems that compound value — not initiatives that consume attention.</p>
+    </div>
+    <div class="wc fade d2">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+      <h4>We stay until the outcome is real</h4>
+      <p>Most advisors measure success at signing. We measure it six months after. Employee retention, customer continuity, and operational stability post-acquisition are metrics we are accountable for — because that's when the value you built either holds or disappears.</p>
+    </div>
+    <div class="wc fade">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <h4>Three levers. One system. No silos.</h4>
+      <p>Most firms specialize in one. Revenue, operations, and AI are not sequential workstreams — they compound each other. We run all three in parallel, because that is how real enterprise value is built before a transaction.</p>
+    </div>
+    <div class="wc fade d1">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div>
+      <h4>Sector depth, not breadth</h4>
+      <p>SaaS. Communications. Political Tech. Energy. Healthcare. Education. Regulated environments where growth, compliance, and digital transformation must move together.</p>
+    </div>
+    <div class="wc fade d2">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+      <h4>Aligned to your outcome</h4>
+      <p>We measure success in business performance and enterprise value.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="sec proof" id="outcomes">
+  <p class="ey fade">The Work. The Results.</p>
+  <h2 class="h2 fade d1">Outcomes that speak<br>for themselves.</h2>
+  <p class="sub fade d2">We measure success in business performance and enterprise value — not hours billed or deliverables counted.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;" class="fade">
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">10–14<span style="font-size:1.6rem;color:var(--teal);">×</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">EBITDA multiples achieved on mid-market exits following revenue transformation, operational build-out, and AI readiness work</div>
+    </div>
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">100<span style="font-size:1.6rem;color:var(--teal);">%</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">Key talent retained through high-stakes transitions — acquisitions, ownership changes, and pre-IPO windows where people risk is highest</div>
+    </div>
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">2–3<span style="font-size:1.6rem;color:var(--teal);">×</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">Revenue growth achieved inside 36 months across turnaround, transformation, and scale engagements</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1.5rem;" class="fade d1">
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">Value Creation → Dual Exit</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">An enterprise platform serving regulated industries. Profitable but plateaued — revenue model built for volume, not value.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team rebuilt the revenue model from transactional to committed subscription, stabilized operations, and held team attrition below 7% through rapid expansion. Revenue grew significantly in under three years. The company transacted at a premium multiple. Our team stayed through integration, continued building under new ownership, and set the trajectory for a second transaction at an even higher multiple.</p>
+    </div>
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">Digital Transformation → Modernization</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">A large established organization running on legacy systems, disconnected data, and manual processes that had outgrown the business.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team designed and led a phased transformation roadmap — beginning with a current-state audit tied directly to business outcomes, not IT deliverables. We sequenced the work to protect operations while accelerating change, embedding AI-ready infrastructure at each layer. The result was a leaner, faster organization capable of scaling without adding headcount.</p>
+    </div>
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">New Verticals → Talent Retention → Public Markets</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">A pre-public AI company with a compressed window, two new revenue verticals to build, and a critical technical team to protect.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team retained 100% of key technical personnel through the pre-transaction period — protecting the foundation the company's valuation depended on. We launched two revenue verticals from the ground up, establishing go-to-market strategy, partnerships, and commercial infrastructure in each. The company successfully reached public markets.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;padding:2rem;background:var(--navy);border-radius:6px;" class="fade d2">
+    <p style="font-family:'Newsreader',serif;font-size:1.1rem;font-weight:400;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.6;max-width:680px;">Our deepest experience is at the intersection of technology and regulated industries — healthcare, energy, education, communications, and technology companies — and the mid-market companies operating in them or selling into them. These businesses face the hardest version of the growth problem: moving fast enough to compete with AI-native startups while navigating compliance requirements, legacy infrastructure, and the organizational complexity that comes with being an established business. That's where our experience runs deepest — and where we've seen what it takes to win.</p>
+  </div>
+  <p style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:1rem;">The engagements are confidential. The outcomes are not.</p>
+</section>
+
+<!-- WHO WE SERVE -->
+<section class="personas" id="clients">
+  <p class="ey fade">Who We Serve</p>
+  <h2 class="h2 fade d1">One goal. Multiple stakeholders.</h2>
+  <p class="sub fade d2">The companies we work with are heading toward a transaction. The professionals we partner with are helping those companies get there.</p>
+
+  <div class="ptabs fade d2">
+    <button class="ptab on" onclick="tab(this,'pf')">Founder / CEO</button>
+    <button class="ptab" onclick="tab(this,'pb')">Board Member</button>
+    <button class="ptab" onclick="tab(this,'pib')">Investment Banker</button>
+    <button class="ptab" onclick="tab(this,'pa')">Attorney</button>
+    <button class="ptab" onclick="tab(this,'pc')">CFO</button>
+  </div>
+
+  <div id="pf" class="pcontent on fade">
+    <div class="pc-left">
+      <h3>You're building something. Let's make sure it performs at its full potential.</h3>
+      <p>Whether you're growing fast, navigating a turnaround, transforming with AI, or preparing to exit — we start with an honest assessment. We tell you the truth about where the gaps are. Then we get to work.</p>
+    </div>
+    <ul class="plist">
+      <li>Revenue model transformation toward recurring and predictable</li>
+      <li>AI implementation that scales your team and reduces cost</li>
+      <li>Operational efficiency and margin improvement</li>
+      <li>Team and organizational readiness for post-acquisition</li>
+      <li>Technology simplified for growth and diligence</li>
+      <li>Exit narrative built on what the business actually delivers</li>
+    </ul>
+  </div>
+
+  <div id="pb" class="pcontent fade">
+    <div class="pc-left">
+      <h3>The board's responsibility is to maximize enterprise value.</h3>
+      <p>We provide independent operational perspective on execution gaps, revenue quality, and technology risk — and we stay accountable to outcomes, not just recommendations.</p>
+    </div>
+    <ul class="plist">
+      <li>Independent revenue and operational assessment</li>
+      <li>AI and technology strategy at the governance level</li>
+      <li>Management team readiness and accountability</li>
+      <li>Exit readiness reporting and recommendations</li>
+      <li>Post-acquisition outcome planning</li>
+    </ul>
+  </div>
+
+  <div id="pib" class="pcontent fade">
+    <div class="pc-left">
+      <h3>Your process deserves a company that's ready for it.</h3>
+      <p>We work alongside investment bankers whose clients need operational and commercial preparation before a formal process begins. You run the deal. We build what supports it.</p>
+    </div>
+    <ul class="plist">
+      <li>Revenue model strengthening and recurring revenue development</li>
+      <li>EBITDA improvement and margin normalization</li>
+      <li>AI and technology readiness narrative for diligence</li>
+      <li>Management presentation and deal narrative support</li>
+      <li>Post-close operational continuity and retention planning</li>
+    </ul>
+  </div>
+
+  <div id="pa" class="pcontent fade">
+    <div class="pc-left">
+      <h3>Your clients need operational counsel alongside legal counsel.</h3>
+      <p>We provide the revenue, operational, and technology credibility required before and during a transaction — including risk identification and expert perspective on technology representations.</p>
+    </div>
+    <ul class="plist">
+      <li>Operational and technology due diligence support</li>
+      <li>Pre-transaction risk identification and remediation</li>
+      <li>Expert perspective on technology representations</li>
+      <li>Post-close integration and retention risk planning</li>
+      <li>Business value gap assessment</li>
+    </ul>
+  </div>
+
+  <div id="pc" class="pcontent fade">
+    <div class="pc-left">
+      <h3>The financials tell a story. Revenue and operations need to support it.</h3>
+      <p>We bridge the gap between the financial model and what the business can actually deliver — ensuring that revenue quality, operational performance, and AI investment are reflected in the numbers a buyer will see.</p>
+    </div>
+    <ul class="plist">
+      <li>Revenue model alignment to financial projections</li>
+      <li>Operational efficiency tied to margin performance</li>
+      <li>AI and technology ROI — hard and soft savings</li>
+      <li>EBITDA bridge and normalization planning</li>
+      <li>Scalability and working capital documentation</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PARTNERSHIPS -->
+<section class="partners" id="partners">
+  <p class="ey fade" style="color:var(--teal);">Partnerships</p>
+  <h2 class="h2 h2-wht fade d1">We work best when we<br>work alongside the best.</h2>
+  <p class="sub sub-wht fade d2">Our partners are the professionals companies trust most during their most consequential decisions. When your client needs what we do — we step in, do the work, and step back.</p>
+
+  <div class="partner-grid">
+    <div class="pg fade">
+      <p class="pg-cat">Investment Bankers</p>
+      <h4>Your deal is only as strong as the company behind it.</h4>
+      <p>We prepare mid-market companies for your process — closing revenue gaps, tightening operations, and building the AI and technology narrative sophisticated buyers expect. Your mandate is protected. Your process starts from a position of strength.</p>
+    </div>
+    <div class="pg fade d1">
+      <p class="pg-cat">M&amp;A Attorneys</p>
+      <h4>Operational credibility that supports the transaction.</h4>
+      <p>We provide the commercial, operational, and technology depth your clients need before and during a deal — so what your client signs holds its value after the ink dries.</p>
+    </div>
+    <div class="pg fade d2">
+      <p class="pg-cat">CFOs</p>
+      <h4>The operational counterpart your numbers need.</h4>
+      <p>We bridge the gap between the financial model and what the business can actually deliver — aligning revenue quality, operational execution, and AI-driven efficiency so the metrics a buyer sees are backed by a business that can sustain them.</p>
+    </div>
+  </div>
+  <div class="partners-cta fade">
+    <a href="#contact" class="btn-teal">Start a Partnership</a>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta" id="contact">
+  <p class="ey fade">The KonversAItion Starts Here</p>
+  <h2 class="h2 fade d1">Successful exits are built.<br>Not negotiated.<br><em style="font-family:'Newsreader',serif;font-style:italic;color:var(--muted);">Let's start building.</em></h2>
+  <p class="fade d2">Every engagement begins with an honest assessment — not a pitch. We tell you exactly where the gaps are, what they're costing you, and what a company that closes them looks like. The companies that do this work don't just exit better. They become something worth acquiring. Most move from assessment to outcome in 18 to 25 months. Some faster.</p>
+  <div class="cta-btns fade d3">
+    <a href="mailto:connect@konversaitions.com" class="btn-dark">Start the KonversAItion</a>
+    <a href="mailto:connect@konversaitions.com" class="btn-line">Partner With Us</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="flogo">Konvers<em>AI</em>tions</a>
+  <ul class="flinks">
+    <li><a href="/">AI & Growth</a></li>
+    <li><a href="#how">How We Work</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#clients">Who We Serve</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <span class="fcopy">© 2026 KonversAItions. All rights reserved.</span>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){n.target.classList.add('in');obs.unobserve(n.target);}});},{threshold:.07,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.getElementById('nav').style.boxShadow=scrollY>20?'0 1px 24px rgba(10,25,47,0.3)':'none';},{passive:true});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const t=document.querySelector(this.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+function tab(btn,id){document.querySelectorAll('.pcontent').forEach(el=>el.classList.remove('on'));document.querySelectorAll('.ptab').forEach(el=>el.classList.remove('on'));document.getElementById(id).classList.add('on');btn.classList.add('on');}
+</script>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KonversAItions — AI That Works. Scale Faster. Grow Smarter.</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A192F; --teal:#006a68; --lteal:#0D9997;
+  --gold:#f5be4f; --surface:#f6fafe; --surf-low:#EEF4FB;
+  --surf-high:#FFFFFF; --on-navy:rgba(255,255,255,0.88);
+  --on-navy-muted:rgba(255,255,255,0.42); --on-navy-faint:rgba(255,255,255,0.18);
+  --text:#0A192F; --muted:#4A6080;
+  --gold-chip:rgba(245,190,79,0.10); --shadow:rgba(10,25,47,0.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+.fade.in{opacity:1;transform:none;}
+.d1{transition-delay:.12s;}.d2{transition-delay:.24s;}.d3{transition-delay:.36s;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,25,47,0.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:64px;transition:box-shadow .3s;}
+.logo{font-family:'Newsreader',serif;font-size:1.4rem;font-weight:600;font-style:italic;color:var(--on-navy);text-decoration:none;}
+.logo em{color:var(--teal);font-style:normal;}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{color:var(--on-navy-muted);text-decoration:none;font-size:0.74rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--lteal);}
+.nav-cta{background:var(--teal);color:#fff;padding:.48rem 1.4rem;border-radius:6px;font-size:0.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);}
+.nav-cta:hover{background:var(--lteal);}
+
+/* HERO */
+.hero{min-height:100vh;background:radial-gradient(ellipse at 28% 55%, #0D2A4A 0%, var(--navy) 55%, #040E1C 100%);display:flex;flex-direction:column;justify-content:center;padding:130px 6% 100px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:0;right:0;width:44%;height:100%;background:repeating-linear-gradient(-52deg,transparent,transparent 52px,rgba(0,106,104,0.022) 52px,rgba(0,106,104,0.022) 53px);pointer-events:none;}
+.hero::before{content:'';position:absolute;top:0;right:44%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(245,190,79,0.15) 40%,transparent);pointer-events:none;}
+.hero-ey{font-size:0.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:1.8rem;display:flex;align-items:center;gap:.7rem;}
+.hero-ey::before{content:'';display:block;width:28px;height:1px;background:var(--teal);}
+.hero h1{font-family:'Newsreader',serif;font-size:clamp(3.2rem,6.5vw,5.8rem);font-weight:300;line-height:1.04;color:var(--on-navy);max-width:820px;margin-bottom:1.8rem;}
+.hero h1 em{font-style:italic;color:rgba(255,255,255,0.38);}
+.hero-sub{font-size:1.05rem;font-weight:300;line-height:1.78;color:var(--on-navy-muted);max-width:520px;margin-bottom:3rem;}
+.hero-sub strong{color:rgba(255,255,255,0.8);font-weight:400;}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;}
+.btn-teal{background:var(--teal);color:#fff;padding:.9rem 2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);}
+.btn-teal:hover{background:var(--lteal);}
+.btn-ghost{background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);color:rgba(255,255,255,0.58);padding:.9rem 2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-ghost:hover{background:rgba(0,106,104,0.18);color:var(--lteal);}
+
+/* SHARED */
+.sec{padding:6.5rem 6%;}
+.ey{display:inline-block;font-size:0.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 10px;margin-bottom:1.1rem;}
+.h2{font-family:'Newsreader',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:400;line-height:1.15;color:var(--navy);margin-bottom:1rem;}
+.sub{font-size:0.95rem;line-height:1.8;color:var(--muted);max-width:560px;}
+.h2-wht{color:var(--on-navy);}
+.sub-wht{color:var(--on-navy-muted);}
+
+/* TENSION — AI pain points */
+.tension{background:var(--navy);display:grid;grid-template-columns:1fr 1fr 1fr;}
+.ti{padding:3rem 4%;text-align:center;transition:background .3s;}
+.ti:nth-child(2){background:rgba(255,255,255,0.025);}
+.ti:hover{background:rgba(0,106,104,0.06);}
+.ti-q{font-family:'Newsreader',serif;font-size:1.08rem;font-style:italic;font-weight:400;color:var(--on-navy-muted);line-height:1.55;margin-bottom:.7rem;}
+.ti-a{font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+
+/* AI ASSESSMENT — 3-question section */
+.assess{background:var(--surface);}
+.assess-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:4rem;}
+.assess-left{}
+.assess-left .h2{margin-bottom:1.2rem;}
+.assess-left p{font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;}
+.assess-steps{display:flex;flex-direction:column;gap:1px;}
+.as{background:var(--surf-high);padding:1.8rem 2rem;border-radius:6px;margin-bottom:1rem;box-shadow:0 4px 32px var(--shadow);display:grid;grid-template-columns:44px 1fr;gap:1.2rem;align-items:start;transition:box-shadow .25s,transform .25s;}
+.as:hover{box-shadow:0 8px 48px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.as-num{font-family:'Newsreader',serif;font-size:2rem;font-weight:300;color:var(--gold);opacity:0.6;line-height:1;}
+.as-title{font-size:0.95rem;font-weight:500;color:var(--navy);margin-bottom:.35rem;}
+.as-body{font-size:0.84rem;line-height:1.7;color:var(--muted);}
+
+/* WHAT WE SOLVE — full AI arc */
+.deliverables{background:var(--surf-low);}
+.del-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;}
+.del-card{background:var(--surf-high);padding:2.2rem 1.8rem;border-radius:6px;box-shadow:0 8px 48px var(--shadow);transition:box-shadow .25s,transform .25s;}
+.del-card:hover{box-shadow:0 16px 64px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.del-icon{width:36px;height:36px;background:var(--gold-chip);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;}
+.del-icon svg{width:18px;height:18px;stroke:var(--teal);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.del-title{font-size:0.95rem;font-weight:500;color:var(--navy);margin-bottom:.55rem;}
+.del-body{font-size:0.84rem;line-height:1.72;color:var(--muted);}
+
+/* AI ARC — full journey section */
+.ai-arc{background:var(--navy);}
+.arc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem;}
+.arc-card{background:rgba(255,255,255,0.035);padding:2rem 1.6rem;border-radius:6px;transition:background .2s;display:flex;flex-direction:column;gap:.7rem;}
+.arc-card:hover{background:rgba(0,106,104,0.12);}
+.arc-num{font-family:'Newsreader',serif;font-size:2rem;font-weight:300;color:var(--gold);opacity:0.5;line-height:1;}
+.arc-title{font-size:0.92rem;font-weight:500;color:var(--on-navy);}
+.arc-body{font-size:0.82rem;line-height:1.72;color:var(--on-navy-muted);flex:1;}
+
+/* ADOPTION SECTION */
+.adoption{background:var(--surface);}
+.adoption-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:4rem;}
+.adoption-stat{font-family:'Newsreader',serif;font-size:4rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;}
+.adoption-stat span{font-size:2rem;color:var(--teal);}
+
+/* BELIEF */
+.belief{background:var(--navy);padding:5.5rem 6%;text-align:center;}
+
+/* THREE PILLARS */
+.pillars{background:var(--surf-low);}
+.pillar-intro{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:end;margin-bottom:4rem;}
+.pillar-quote{font-family:'Newsreader',serif;font-size:1.3rem;font-style:italic;font-weight:400;color:var(--muted);line-height:1.6;padding-left:1.6rem;border-left:2px solid var(--gold);}
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.pc{background:var(--surf-high);padding:2.5rem 2rem;border-radius:6px;box-shadow:0 8px 48px var(--shadow);transition:box-shadow .25s,transform .25s;}
+.pc:hover{box-shadow:0 16px 64px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.pc-num{font-family:'Newsreader',serif;font-size:2.4rem;font-weight:300;color:var(--gold);opacity:0.55;line-height:1;margin-bottom:1.3rem;}
+.pc-title{font-size:1rem;font-weight:500;color:var(--navy);margin-bottom:.65rem;}
+.pc-body{font-size:0.85rem;line-height:1.75;color:var(--muted);}
+
+/* HOW WE WORK */
+.how{background:var(--surface);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem;}
+.step{background:var(--surf-high);padding:2.2rem 1.8rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);transition:box-shadow .25s,transform .25s;}
+.step:hover{box-shadow:0 8px 48px rgba(10,25,47,0.09);transform:translateY(-2px);}
+.step-n{display:inline-flex;align-items:center;gap:.4rem;font-size:0.64rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;margin-bottom:1.2rem;}
+.step h3{font-size:0.96rem;font-weight:500;color:var(--navy);margin-bottom:.6rem;}
+.step p{font-size:0.83rem;line-height:1.7;color:var(--muted);}
+
+/* WHY US */
+.why{background:var(--navy);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3.5rem;}
+.wc{background:rgba(255,255,255,0.035);padding:2rem 1.6rem;border-radius:6px;transition:background .2s;}
+.wc:hover{background:rgba(0,106,104,0.12);}
+.wc-icon{margin-bottom:1.1rem;}
+.wc-icon svg{width:20px;height:20px;stroke:var(--teal);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.wc h4{font-size:0.92rem;font-weight:500;color:var(--on-navy);margin-bottom:.55rem;}
+.wc p{font-size:0.82rem;line-height:1.72;color:var(--on-navy-muted);}
+
+/* OUTCOMES */
+.proof{background:var(--surf-low);}
+
+/* PARTNERSHIPS */
+.partners{background:var(--navy);padding:6.5rem 6%;}
+.partner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.pg{background:rgba(255,255,255,0.035);padding:2.2rem 2rem;border-radius:6px;transition:background .2s;}
+.pg:hover{background:rgba(0,106,104,0.1);}
+.pg-cat{font-size:0.68rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,190,79,0.7);margin-bottom:.7rem;}
+.pg h4{font-size:0.95rem;font-weight:500;color:var(--on-navy);margin-bottom:.6rem;font-family:'Newsreader',serif;line-height:1.3;}
+.pg p{font-size:0.82rem;line-height:1.68;color:var(--on-navy-muted);}
+.partners-cta{margin-top:2.5rem;}
+
+/* EXIT BANNER */
+.exit-banner{background:var(--surf-low);padding:5rem 6%;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;}
+.exit-banner-left h2{font-family:'Newsreader',serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:400;line-height:1.2;color:var(--navy);margin-bottom:.8rem;}
+.exit-banner-left p{font-size:0.95rem;line-height:1.8;color:var(--muted);max-width:560px;}
+.btn-dark{background:var(--navy);color:#fff;padding:.9rem 2.2rem;border-radius:6px;font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:background .2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);white-space:nowrap;}
+.btn-dark:hover{background:var(--teal);}
+
+/* CTA */
+.cta{background:var(--surface);padding:9rem 6%;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.cta .h2{max-width:680px;text-align:center;}
+.cta p{font-size:0.95rem;line-height:1.8;color:var(--muted);max-width:500px;margin:1.2rem 0 2.8rem;}
+.cta-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-line{background:transparent;color:var(--navy);padding:.9rem 2.2rem;border-radius:6px;border:1px solid rgba(10,25,47,0.15);font-size:0.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-line:hover{border-color:var(--teal);color:var(--teal);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:2.8rem 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);}
+.flogo{font-family:'Newsreader',serif;font-size:1.2rem;font-weight:600;font-style:italic;color:var(--on-navy);text-decoration:none;}
+.flogo em{color:var(--teal);font-style:normal;}
+.flinks{display:flex;gap:2rem;list-style:none;}
+.flinks a{font-size:0.72rem;color:var(--on-navy-faint);text-decoration:none;transition:color .2s;}
+.flinks a:hover{color:var(--lteal);}
+.fcopy{font-size:0.7rem;color:var(--on-navy-faint);}
+
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .tension{grid-template-columns:1fr;}
+  .ti:nth-child(2){background:transparent;}
+  .assess-grid{grid-template-columns:1fr;gap:3rem;}
+  .del-grid{grid-template-columns:1fr;}
+  .arc-grid{grid-template-columns:1fr 1fr;}
+  .adoption-grid{grid-template-columns:1fr;gap:3rem;}
+  .pillar-intro{grid-template-columns:1fr;gap:2.5rem;}
+  .pillar-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .why-grid{grid-template-columns:1fr;}
+  .partner-grid{grid-template-columns:1fr;}
+  .exit-banner{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Konvers<em>AI</em>tions</a>
+  <ul class="nav-links">
+    <li><a href="#assess">Our Approach</a></li>
+    <li><a href="#ai-arc">The AI Arc</a></li>
+    <li><a href="#how">How We Work</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#partners">Partnerships</a></li>
+    <li><a href="/exit/">Exit Readiness →</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Start the KonversAItion</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-ey fade">AI · Scale · Productivity · Growth</p>
+  <h1 class="fade d1">
+    Cut through the noise.<br>
+    <em>Find the AI that actually<br>moves your business.</em>
+  </h1>
+  <p class="hero-sub fade d2">
+    We help founders and executive teams unlock revenue, expand margins, and de-risk their next move — then use technology and AI where they actually solve the business problem.
+  </p>
+  <div class="hero-btns fade d3">
+    <a href="#assess" class="btn-teal">See How the Assessment Works</a>
+    <a href="/exit/" class="btn-ghost">Planning an Exit →</a>
+  </div>
+</section>
+
+<!-- TENSION -->
+<div class="tension">
+  <div class="ti fade">
+    <p class="ti-q">"AI is moving faster than we can keep up. We have the customers. We have the relationships. We just don't want to be outrun by a company that started last year."</p>
+    <p class="ti-a">Your foundation is the advantage. AI is how you use it.</p>
+  </div>
+  <div class="ti fade d1">
+    <p class="ti-q">"We bought tools. We ran a training. Three months later nothing changed — because nobody knew what problem we were actually trying to solve."</p>
+    <p class="ti-a">Technology without a defined business need is just cost. We define the need first.</p>
+  </div>
+  <div class="ti fade d2">
+    <p class="ti-q">"A company with half our resources just won a customer we've had for years. They moved faster. Their product solved the problem better. We never saw it coming."</p>
+    <p class="ti-a">Scaling isn't about size. It's about solving the right problems better than anyone else.</p>
+  </div>
+</div>
+
+<!-- WHY AI — Sinek: Start with Why -->
+<section class="sec assess" id="assess" style="background:var(--surf-high);">
+  <div class="assess-grid">
+    <div class="fade">
+      <p class="ey">Why Growth Gets Stuck</p>
+      <h2 class="h2">The companies being overtaken by AI aren't losing on technology.<br><em style="font-style:italic;color:var(--muted);">They're losing because nobody defined the problem first.</em></h2>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;">Established companies have something AI-first startups don't — customers, trust, partnerships, and market depth built over years. That is an enormous advantage. But it disappears fast when a newer competitor uses AI to solve the same problem better, faster, and cheaper.</p>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;">Most companies respond by buying tools. They run a training. They announce an AI initiative. Six months later nothing has changed — because nobody defined the business problem before selecting the technology, and nobody built the adoption process to make it stick.</p>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);">We start with the problem. What is slowing your team down? Where is revenue leaking? What are competitors doing that you aren't? Only when the problem is specific do we identify the right tools — vendor-agnostic, operator-evaluated, built for adoption from day one.</p>
+    </div>
+    <div class="fade d1">
+      <div class="as">
+        <div class="as-num">01</div>
+        <div>
+          <p class="as-title">Define the business problem before touching a tool</p>
+          <p class="as-body">We interview your team, map your workflows, and find where the real friction lives — in revenue, customer delivery, and operations. Not where you think it is. Where the data says it is. Your business is specific. Our diagnosis is too.</p>
+        </div>
+      </div>
+      <div class="as">
+        <div class="as-num">02</div>
+        <div>
+          <p class="as-title">Match the right technology to the specific problem</p>
+          <p class="as-body">Once the problem is defined, we identify the best solution — off-the-shelf, custom, or a combination. We evaluate tools the way an operator would: what works in production, what your team will actually use, and what integrates with the systems you already have.</p>
+        </div>
+      </div>
+      <div class="as">
+        <div class="as-num">03</div>
+        <div>
+          <p class="as-title">Build the adoption system — not just the deployment</p>
+          <p class="as-body">Technology your team doesn't use doesn't create value. We build the process, the training, and the accountability that turns deployment into adoption — so the investment shows up in productivity, margin, and competitive advantage, not just on an invoice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE FULL AI ARC — Problem to Scale -->
+<section class="sec ai-arc" id="ai-arc">
+  <p class="ey fade" style="color:var(--teal);">How We Create Value</p>
+  <h2 class="h2 h2-wht fade d1">Most firms stop at deployment.<br>We go all the way to scale.</h2>
+  <p class="sub sub-wht fade d2">Deploying AI is the beginning. The value lives in what happens after — adoption, alignment, governance, and compound productivity. That's where we work.</p>
+
+  <div class="arc-grid">
+    <div class="arc-card fade">
+      <div class="arc-num">01</div>
+      <p class="arc-title">Problem & Tool Selection</p>
+      <p class="arc-body">Start with the business problem — not the tool. Identify where AI creates real value for your customers, your team, and your margins. Then match the right technology to that problem, including how to deploy it alongside legacy systems without a full rebuild.</p>
+    </div>
+    <div class="arc-card fade d1">
+      <div class="arc-num">02</div>
+      <p class="arc-title">Implementation & Automation</p>
+      <p class="arc-body">Deploy AI and automation that scales what your team does — not just what it costs. Every initiative sequenced by the business value it creates: customer outcomes first, internal productivity second, cost reduction third.</p>
+    </div>
+    <div class="arc-card fade d2">
+      <div class="arc-num">03</div>
+      <p class="arc-title">Risk, Governance & Guardrails</p>
+      <p class="arc-body">AI without governance is a liability. We establish the frameworks, policies, and accountability structures that let you move fast without creating exposure — at the board level and the team level.</p>
+    </div>
+    <div class="arc-card fade d3">
+      <div class="arc-num">04</div>
+      <p class="arc-title">Adoption & Team Alignment</p>
+      <p class="arc-body">The biggest AI failure isn't technical. It's human. A tool without a process is just cost. We build the adoption system — the training, the workflows, the accountability — that makes AI feel like a natural part of how work gets done. Every team member. Same direction. Compound results.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ADOPTION — habits and systems framing -->
+<section class="sec adoption" id="adoption">
+  <div class="adoption-grid">
+    <div class="fade">
+      <p class="ey">Why Change Fails</p>
+      <h2 class="h2">AI adoption isn't a<br>technology problem.<br><em style="font-style:italic;color:var(--muted);">It's a habits problem.</em></h2>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;">Your team is already using AI — in moments, in pockets, in individual workflows. The problem is that those habits haven't been built into the way the company operates. The productivity gain stays personal. It never becomes organizational — and it never reaches the customer.</p>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;">You don't change a company by mandating a tool. You change it by building the habits — individual habits, team habits, and company habits — that make AI the obvious way to do the work. Small, consistent, compounding. That's how lasting change happens.</p>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);margin-bottom:1.2rem;">And when those habits are built around your product and your customer — when AI is embedded in how you deliver, how you respond, and how you improve — that's when customers feel the difference. Faster resolution. Better service. A product that gets smarter over time. That's the competitive moat. Not the tool. The habit of using it well, for the people you serve.</p>
+      <p style="font-size:0.95rem;line-height:1.8;color:var(--muted);">We build those habits. Not with a slide deck. Not with a one-day training. With workflows built around your product, your service, and your customer — so every team member is more capable, more confident, and more competitive every week.</p>
+    </div>
+    <div class="fade d1">
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div style="background:var(--surf-low);padding:2rem;border-radius:6px;">
+          <p class="ey" style="margin-bottom:.6rem;">The identity shift — James Clear</p>
+          <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;font-style:italic;color:var(--navy);line-height:1.6;">"Every action you take is a vote for the type of company you want to become. The goal isn't to use AI once. It's to build the systems that make using AI the automatic choice — a thousand times a day, across every team."</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="background:var(--surf-high);padding:1.4rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);">
+            <p style="font-size:0.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">Individual habits</p>
+            <p style="font-size:0.84rem;line-height:1.65;color:var(--text);">Every team member knows which AI tools apply to their work — and uses them without being asked</p>
+          </div>
+          <div style="background:var(--surf-high);padding:1.4rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);">
+            <p style="font-size:0.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">Team habits</p>
+            <p style="font-size:0.84rem;line-height:1.65;color:var(--text);">AI is embedded in how teams collaborate, decide, and deliver — not bolted on as a separate initiative</p>
+          </div>
+          <div style="background:var(--surf-high);padding:1.4rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);">
+            <p style="font-size:0.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">Company habits</p>
+            <p style="font-size:0.84rem;line-height:1.65;color:var(--text);">Governance, accountability, and continuous improvement baked in — so AI scales responsibly as the company grows</p>
+          </div>
+          <div style="background:var(--surf-high);padding:1.4rem;border-radius:6px;box-shadow:0 4px 32px var(--shadow);">
+            <p style="font-size:0.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">The compound result</p>
+            <p style="font-size:0.84rem;line-height:1.65;color:var(--text);">A 1% productivity improvement every week doesn't add up. It multiplies. That's the competitive advantage that compounds quarterly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BELIEF — Sinek + Clear -->
+<section class="belief fade">
+  <p class="ey" style="color:var(--teal);">What We Believe</p>
+  <p style="font-family:'Newsreader',serif;font-size:clamp(1.4rem,2.8vw,2.1rem);font-weight:300;line-height:1.5;color:rgba(255,255,255,0.88);max-width:760px;margin:0 auto;border-left:3px solid var(--gold);padding-left:2rem;text-align:left;" class="fade d1">"Every company has more potential than it has yet reached — and the gap between where you are and where you could be closes faster than anyone expects when the right people are working on the right things in the right order."</p>
+  <p style="font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.35);max-width:580px;margin:1.4rem auto 0;line-height:1.78;" class="fade d2">Most businesses don't stall from lack of effort. They stall from a lack of focus, alignment, and the right sequence of moves. Small improvements in the right systems compound into extraordinary results. That's what we build.</p>
+</section>
+
+<!-- THREE PILLARS -->
+<section class="sec pillars" id="pillars">
+  <div class="pillar-intro">
+    <div class="fade">
+      <p class="ey">What We Do</p>
+      <h2 class="h2">AI is the lever.<br>Revenue, operations,<br>and scale are the outcome.</h2>
+      <p class="sub">We don't implement AI for its own sake. Every initiative we recommend is tied to a business outcome — more revenue, lower cost, or a competitive advantage that compounds.</p>
+    </div>
+    <p class="pillar-quote fade d1">"The gap between where you are and where you want to be is almost always closeable faster than anyone expects."</p>
+  </div>
+
+  <div class="pillar-grid">
+    <div class="pc fade">
+      <div class="pc-num">01</div>
+      <p class="pc-title">Revenue Growth</p>
+      <p class="pc-body">We unlock the revenue already inside your business. Predictable, recurring income. Upsell and cross-sell your team isn't capturing. A go-to-market motion that speaks directly to market demand — and AI tools that scale the execution without scaling the headcount.</p>
+    </div>
+    <div class="pc fade d1">
+      <div class="pc-num">02</div>
+      <p class="pc-title">AI & Technology</p>
+      <p class="pc-body">AI deployed as a real business lever — not a demo. We identify where it reduces cost, increases capacity, and drives revenue, then we build it. Technology simplified to solve business problems. Every initiative tied to a measurable outcome.</p>
+    </div>
+    <div class="pc fade d2">
+      <div class="pc-num">03</div>
+      <p class="pc-body pc-title-override" style="font-size:1rem;font-weight:500;color:var(--navy);margin-bottom:.65rem;">Operations & Scale</p>
+      <p class="pc-body">We remove what slows you down and build what lets you grow without breaking. Tighter processes, cleaner reporting, a team that performs without the founder in every room — whether you are scaling fast, navigating a turnaround, or preparing for what comes next.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK -->
+<section class="sec how" id="how">
+  <p class="ey fade">The Journey</p>
+  <h2 class="h2 fade d1">From where you are<br>to where you want to be.</h2>
+  <p class="sub fade d2">Every engagement begins with honesty about where you are. Not a pitch — a diagnosis. What we find shapes everything that follows.</p>
+
+  <div class="how-grid">
+    <div class="step fade">
+      <p class="step-n">Step 01</p>
+      <h3>Understand where you are</h3>
+      <p>We find what is actually limiting you — in revenue, AI, and operations. Honest, specific, and fast. No assumptions. No templates. Just clarity on the gap and what it costs you.</p>
+    </div>
+    <div class="step fade d1">
+      <p class="step-n">Step 02</p>
+      <h3>Build toward where you want to be</h3>
+      <p>We embed and execute — not advise from a distance. Revenue. AI. Operations. We identify the partnerships, integrations, and channels that accelerate your growth — and build the infrastructure to monetize them.</p>
+    </div>
+    <div class="step fade d2">
+      <p class="step-n">Step 03</p>
+      <h3>Arrive at full strength</h3>
+      <p>Whether your milestone is a growth inflection, a transformation complete, or an exit — we make sure you arrive there operationally sound, commercially proven, and AI-enabled.</p>
+    </div>
+    <div class="step fade d3">
+      <p class="step-n">Step 04</p>
+      <h3>Protect what you built</h3>
+      <p>We stay through the transition. Employee retention. Customer continuity. The momentum you built doesn't disappear when the milestone is reached — we make sure of that.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="sec why" id="why">
+  <p class="ey fade" style="color:var(--teal);">Why KonversAItions</p>
+  <h2 class="h2 h2-wht fade d1">Operators. Not advisors.</h2>
+  <p class="sub sub-wht fade d2">Executive experience across operations, revenue, and AI — not consultant theory. We've held the seats and done the work. That difference shows up in every engagement.</p>
+
+  <div class="why-grid">
+    <div class="wc fade">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <h4>We've held the seats</h4>
+      <p>Operational leader. Revenue leader. Technology leader at a public AI company. We bring executive-level experience across all three — not consultant theory.</p>
+    </div>
+    <div class="wc fade d1">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+      <h4>AI that actually scales your business</h4>
+      <p>We don't implement AI for its own sake. We identify where it reduces cost, increases capacity, and drives revenue — then we build it. The name KonversAItions isn't an accident.</p>
+    </div>
+    <div class="wc fade d2">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <h4>Revenue, operations, and AI — simultaneously</h4>
+      <p>Most firms specialize in one. We run all three in parallel, because that is how real companies create value — not sequentially.</p>
+    </div>
+    <div class="wc fade">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+      <h4>We stay through the transition</h4>
+      <p>Post-acquisition employee and customer retention is a measurable outcome we are accountable for. Most firms are gone before integration starts. We are not.</p>
+    </div>
+    <div class="wc fade d1">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div>
+      <h4>Sector depth, not breadth</h4>
+      <p>SaaS. Communications. Political Tech. Energy. Healthcare. Education. Regulated environments where growth, compliance, and digital transformation must move together.</p>
+    </div>
+    <div class="wc fade d2">
+      <div class="wc-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+      <h4>Aligned to your outcome</h4>
+      <p>We measure success in business performance and enterprise value — not retainer hours or deliverable count.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="sec proof" id="outcomes">
+  <p class="ey fade">The Work. The Results.</p>
+  <h2 class="h2 fade d1">Outcomes that speak<br>for themselves.</h2>
+  <p class="sub fade d2">We measure success in business performance and enterprise value — not hours billed or deliverables counted.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;" class="fade">
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">10–14<span style="font-size:1.6rem;color:var(--teal);">×</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">EBITDA multiples achieved on mid-market exits following revenue transformation, operational build-out, and AI readiness work</div>
+    </div>
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">100<span style="font-size:1.6rem;color:var(--teal);">%</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">Key talent retained through high-stakes transitions — acquisitions, ownership changes, and pre-IPO windows where people risk is highest</div>
+    </div>
+    <div style="background:var(--surf-high);padding:2rem 1.6rem;border-radius:6px;box-shadow:0 4px 32px rgba(10,25,47,0.06);">
+      <div style="font-family:'Newsreader',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--navy);margin-bottom:.5rem;">2–3<span style="font-size:1.6rem;color:var(--teal);">×</span></div>
+      <div style="font-size:0.81rem;line-height:1.55;color:var(--muted);">Revenue growth achieved inside 36 months across turnaround, transformation, and scale engagements</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1.5rem;" class="fade d1">
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">Value Creation → Dual Exit</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">An enterprise platform serving regulated industries. Profitable but plateaued — revenue model built for volume, not value.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team rebuilt the revenue model from transactional to committed subscription, stabilized operations, and held team attrition below 7% through rapid expansion. Revenue grew significantly in under three years. The company transacted at a premium multiple. Our team stayed through integration, continued building under new ownership, and set the trajectory for a second transaction at an even higher multiple.</p>
+    </div>
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">Digital Transformation → Modernization</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">A large established organization running on legacy systems, disconnected data, and manual processes that had outgrown the business.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team designed and led a phased transformation roadmap — beginning with a current-state audit tied directly to business outcomes, not IT deliverables. We sequenced the work to protect operations while accelerating change, embedding AI-ready infrastructure at each layer. The result was a leaner, faster organization capable of scaling without adding headcount.</p>
+    </div>
+    <div style="background:var(--surf-high);padding:2.2rem 2rem;border-radius:6px;display:flex;flex-direction:column;gap:.8rem;box-shadow:0 8px 48px rgba(10,25,47,0.06);">
+      <p style="font-size:0.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--gold-chip);border-radius:2px;padding:3px 8px;width:fit-content;">New Verticals → Talent Retention → Public Markets</p>
+      <p style="font-family:'Newsreader',serif;font-size:1.15rem;font-weight:400;color:var(--navy);line-height:1.35;">A pre-public AI company with a compressed window, two new revenue verticals to build, and a critical technical team to protect.</p>
+      <p style="font-size:0.86rem;line-height:1.75;color:var(--muted);flex:1;">Our team retained 100% of key technical personnel through the pre-transaction period — protecting the foundation the company's valuation depended on. We launched two revenue verticals from the ground up, establishing go-to-market strategy, partnerships, and commercial infrastructure in each. The company successfully reached public markets.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;padding:2rem;background:var(--navy);border-radius:6px;" class="fade d2">
+    <p style="font-family:'Newsreader',serif;font-size:1.1rem;font-weight:400;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.6;max-width:680px;">Our deepest experience is at the intersection of technology and regulated industries — healthcare, energy, education, communications, and technology companies — and the mid-market companies operating in them or selling into them. These businesses face the hardest version of the growth problem: moving fast enough to compete with AI-native startups while navigating compliance requirements, legacy infrastructure, and the organizational complexity that comes with being an established business. That's where our experience runs deepest — and where we've seen what it takes to win.</p>
+  </div>
+  <p style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:1rem;">The engagements are confidential. The outcomes are not.</p>
+</section>
+
+<!-- PARTNERSHIPS -->
+<section class="partners" id="partners">
+  <p class="ey fade" style="color:var(--teal);">Partnerships</p>
+  <h2 class="h2 h2-wht fade d1">We work best when we<br>work alongside the best.</h2>
+  <p class="sub sub-wht fade d2">Our partners are the professionals companies trust most during their most consequential decisions. When your client needs operational, revenue, or AI expertise — we step in, do the work, and step back.</p>
+
+  <div class="partner-grid">
+    <div class="pg fade">
+      <p class="pg-cat">Investment Bankers</p>
+      <h4>Your deal is only as strong as the company behind it.</h4>
+      <p>We prepare mid-market companies for your process — closing revenue gaps, tightening operations, and building the AI and technology narrative sophisticated buyers expect. Your mandate is protected. Your process starts from a position of strength.</p>
+    </div>
+    <div class="pg fade d1">
+      <p class="pg-cat">M&amp;A Attorneys</p>
+      <h4>Operational credibility that supports the transaction.</h4>
+      <p>We provide the commercial, operational, and technology depth your clients need before and during a deal — so what your client signs holds its value after the ink dries.</p>
+    </div>
+    <div class="pg fade d2">
+      <p class="pg-cat">CFOs</p>
+      <h4>The operational counterpart your numbers need.</h4>
+      <p>We bridge the gap between the financial model and what the business can actually deliver — aligning revenue quality, operational execution, and AI-driven efficiency so the metrics a buyer sees are backed by a business that can sustain them.</p>
+    </div>
+  </div>
+  <div class="partners-cta fade">
+    <a href="#contact" class="btn-teal">Start a Partnership</a>
+  </div>
+</section>
+
+<!-- EXIT BANNER -->
+<div class="exit-banner">
+  <div class="exit-banner-left fade">
+    <h2>Also preparing for an exit?</h2>
+    <p>We work with companies 12 to 36 months from a transaction — building the operational foundation, revenue quality, and AI readiness that commands a premium at close. That work lives on its own page.</p>
+  </div>
+  <a href="/exit/" class="btn-dark fade d1">Explore Exit Readiness →</a>
+</div>
+
+<!-- FINAL CTA -->
+<section class="cta" id="contact">
+  <p class="ey fade">Start the KonversAItion</p>
+  <h2 class="h2 fade d1">Most companies are closer<br>than they think.<br><em style="font-family:'Newsreader',serif;font-style:italic;color:var(--muted);">Let's find out how close you are.</em></h2>
+  <p class="fade d2">Every engagement begins with an honest assessment — not a pitch. We tell you where the gap is, what it costs you to leave it open, and what closing it looks like. Most of our clients move from assessment to outcome in 6 to 18 months. Some faster.</p>
+  <div class="cta-btns fade d3">
+    <a href="mailto:connect@konversaitions.com" class="btn-dark">Start the KonversAItion</a>
+    <a href="mailto:connect@konversaitions.com" class="btn-line">Partner With Us</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="flogo">Konvers<em>AI</em>tions</a>
+  <ul class="flinks">
+    <li><a href="#assess">Our Approach</a></li>
+    <li><a href="#ai-arc">The AI Arc</a></li>
+    <li><a href="#how">How We Work</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#partners">Partnerships</a></li>
+    <li><a href="/exit/">Exit Readiness</a></li>
+  </ul>
+  <span class="fcopy">© 2026 KonversAItions. All rights reserved.</span>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){n.target.classList.add('in');obs.unobserve(n.target);}});},{threshold:.07,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.getElementById('nav').style.boxShadow=scrollY>20?'0 1px 24px rgba(10,25,47,0.3)':'none';},{passive:true});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const t=document.querySelector(this.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+</script>
+</body>
+</html>
