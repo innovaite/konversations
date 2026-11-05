@@ -1,168 +1,71 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code in the KonversAItions website repo. This file is the master copy of how the site is built, changed and published. Personal preferences live in CLAUDE.local.md (not committed).
 
-## Project Overview
+## Who this is for
 
-**KonversAItions Website** — A custom-built marketing website for KonversAItions (AI company). The site is hosted on WordPress but serves completely custom HTML/CSS instead of using WordPress themes. Two custom WordPress plugins intercept requests and serve raw HTML files, allowing full design control independent of WordPress's theme system.
+The site owner, Elisa, manages konversaitions.com and is not a developer. Explain in plain language. Show what will change before changing it. All website copy is US English.
 
-## Repository Structure
+## The site
 
-```
-website/
-  ├── konversaitions_v16.html                     # Home page (served at / and /home-preview/)
-  ├── konversaitions_exitV16.html                 # Exit page (served at /exit/ and /exit-preview/)
-  ├── konversaitions-content-preview.zip          # Plugin v1.1 (ready for deployment)
-  └── CLAUDE.md                                   # This file
-```
+- `konversaitions_v16.html`: home page, served at `/` and `/home-preview/`
+- `konversaitions_exitV16.html`: exit page, served at `/exit/` and `/exit-preview/`
+- `konversaitions-content-preview.zip`: the WordPress plugin. Contains `konversaitions-content-preview/` with `konversaitions-content-preview.php` (v1.1 routing), `home.html` and `exit.html`.
 
-## Architecture
+WordPress hosts the site but does not render it. The plugin intercepts `/`, `/exit/`, `/home-preview/` and `/exit-preview/` and serves `home.html` or `exit.html` raw. A legacy plugin, "KonversAItions Raw HTML Pages" v1.0, is also installed. Cloudflare sits in front and caches pages.
 
-**WordPress + Raw HTML Plugin System:**
-- The WordPress installation uses custom plugins (`KonversAItions Content Preview` and `KonversAItions Raw HTML Pages`) that intercept HTTP requests
-- These plugins bypass WordPress theme rendering and serve static HTML files directly
-- This approach provides full design control while maintaining WordPress as the hosting foundation
-- Two plugins exist to allow preview routes (`/home-preview/`, `/exit-preview/`) and production routes (`/`, `/exit/`)
+Each HTML file is self-contained: inline `<style>`, CSS variables in `:root` (`--navy`, `--teal`, `--lteal`, `--gold`, `--surface`, `--on-navy`, `--on-navy-muted`, `--on-navy-faint`), Google Fonts Newsreader and Inter, responsive via `clamp()`, `vw` and `vmin`. Animation classes: `.fade`, `.fade.in`, `.d1` to `.d3`. Buttons: `.btn-*`.
 
-**File Organization:**
-- HTML files are complete, self-contained pages with inline CSS
-- Styles use CSS custom properties (variables) for theming and are embedded in `<style>` tags
-- No external CSS files or JavaScript frameworks—pure HTML + vanilla CSS
-- Responsive design using viewport-relative units (`clamp()`, `vw`, `vmin`)
+Do not add frameworks or external CSS or JavaScript libraries. Keep the existing colors, fonts and layout unless a design change is requested.
 
-## Development Workflow
+### Links differ between source and ZIP
 
-### Editing Content
+The source files link to each other by filename so they work when opened locally:
+- home links to `konversaitions_exitV16.html`
+- exit links to `konversaitions_v16.html`
 
-1. **Update HTML files locally** — Edit `konversaitions_v16.html` (home) or `konversaitions_exitV16.html` (exit) in any text editor
-2. **Content Areas to Edit:**
-   - Hero section: `.hero h1`, `.hero-sub` (main heading and subheading)
-   - Section labels: Search for section titles like "Why Growth Gets Stuck", "How We Create Value", etc.
-   - Sector list: Find the `.sectors` list or similar for industry sectors
+The copies inside the ZIP must use site paths instead: `/exit/` and `/`. A straight copy breaks navigation on the live site. The publish steps below handle this.
 
-### Deployment
+## When asked for a change
 
-**Manual Upload via WordPress Admin (Recommended for CAPTCHA Protection):**
-1. Navigate to: `https://konversaitions.com/wp-admin/plugin-install.php?tab=upload`
-2. Click "Choose File" button to open browser file picker
-3. Select the prepared plugin ZIP file
-4. Click "Install Now" to deploy
-5. Verify activation in WordPress Admin → Plugins
+1. `git pull`.
+2. Find the text or section meant. If more than one match, quote the matches and ask which one.
+3. Describe the change in plain words before making it.
+4. Edit the source HTML file.
+5. `open <file>` and say what to check, including how it looks at phone width (narrow the browser window, or Safari: Develop > Enter Responsive Design Mode).
+6. Commit with a clear message and `git push`. Every change is committed and pushed. Pushing to GitHub does not change the live site; only a publish does.
 
-**Plugin Package Structure:**
-- ZIP archive contains:
-  ```
-  konversaitions-content-preview/
-    ├── konversaitions-content-preview.php    # Plugin file with routing logic
-    ├── home.html                              # Updated home page (from konversaitions_v16.html)
-    └── exit.html                              # Updated exit page (from konversaitions_exitV16.html)
-  ```
-- The plugin PHP file must contain routing logic that intercepts `/`, `/exit/`, `/home-preview/`, and `/exit-preview/` requests
-- Plugin must set v1.1 in header to differentiate from legacy v1.0
+## When asked to "publish"
 
-**CAPTCHA Note:** WordPress has security protections on the plugin upload endpoint to prevent automated attacks. Manual browser-based upload is the reliable method.
+1. Rebuild the ZIP in a temp folder:
+   - unzip the existing ZIP
+   - copy `konversaitions_v16.html` to `home.html` and `konversaitions_exitV16.html` to `exit.html`
+   - in `home.html` replace `href="konversaitions_exitV16.html"` with `href="/exit/"`
+   - in `exit.html` replace `href="konversaitions_v16.html"` with `href="/"`
+   - leave the PHP file untouched
+   - re-zip with `konversaitions-content-preview/` as the top folder
+2. Check before handing over: `grep` shows no `konversaitions_v16.html` or `konversaitions_exitV16.html` left in the ZIP copies, and the PHP file is byte-identical to the previous ZIP.
+3. Replace the repo ZIP, copy it to `~/Desktop`, commit and push.
+4. Walk through the upload one step at a time:
+   `konversaitions.com/wp-admin/plugin-install.php?tab=upload` > Choose File > the ZIP on the Desktop > Install Now > "Replace current with uploaded" > confirm the plugin is active. The upload page has a CAPTCHA, so it is always done by hand in the browser.
+5. When told it is uploaded, purge the Cloudflare cache. The token is in the macOS keychain. Read it inside the command and never print, echo or save it:
+   ```
+   TOKEN=$(security find-generic-password -s cloudflare-konv-purge -w)
+   ZONE=$(curl -s -H "Authorization: Bearer $TOKEN" "https://api.cloudflare.com/client/v4/zones?name=konversaitions.com" | python3 -c 'import sys,json;print(json.load(sys.stdin)["result"][0]["id"])')
+   curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "https://api.cloudflare.com/client/v4/zones/$ZONE/purge_cache" --data '{"purge_everything":true}' | python3 -c 'import sys,json;d=json.load(sys.stdin);print("Purge succeeded" if d.get("success") else d.get("errors"))'
+   ```
+   Run all three lines in one shell call. Report whether it succeeded. If the API fails, walk through Cloudflare dashboard > konversaitions.com > Caching > Configuration > Purge Everything.
+6. Have the owner check `/home-preview/` and `/exit-preview/`, then `/` and `/exit/`, including the links between the two pages.
 
-## Key Technical Details
+## Rules
 
-### HTML Structure
-- Complete `<!DOCTYPE html>` with proper meta tags
-- Responsive viewport configuration
-- Google Fonts integration for 'Newsreader' (serif) and 'Inter' (sans-serif)
-- Dark theme using navy/teal/gold color scheme
-
-### CSS Architecture
-- CSS custom properties defined in `:root` for:
-  - Colors: `--navy`, `--teal`, `--lteal`, `--gold`, `--surface`, etc.
-  - Text variants: `--on-navy`, `--on-navy-muted`, `--on-navy-faint`
-- Utility classes for animations: `.fade`, `.fade.in`, `.d1`, `.d2`, `.d3` (delay cascades)
-- Flexbox-based layout with responsive `clamp()` for typography
-- Smooth transitions and hover states for interactivity
-
-### Naming Conventions
-- BEM-style class names for components: `.nav`, `.logo`, `.nav-links`, `.hero`, `.hero-ey`, `.hero-sub`
-- State classes: `.in` (for animation states), `.active` (for navigation)
-- Utility prefixes: `.d1`, `.d2`, `.d3` (animation delays), `.btn-*` (button variants)
-
-## Common Tasks
-
-**Update website copy:**
-1. Edit `konversaitions_v16.html` or `konversaitions_exitV16.html` directly
-2. Search for the text you want to change (e.g., search for section headings)
-3. Update and save
-4. Test locally by opening the HTML file in a browser
-5. Deploy via WordPress plugin upload
-
-**Add/modify sections:**
-1. Find the relevant section div (e.g., `.hero`, `.section`, `.faq`)
-2. Update HTML structure and inline CSS as needed
-3. Ensure all CSS for the new section is included in the `<style>` tag
-4. Test responsiveness with browser DevTools (check mobile, tablet, desktop)
-
-**Update colors or spacing:**
-1. Modify CSS custom properties in `:root` section for site-wide changes
-2. Or update specific component styles within their CSS rule sets
-3. All styling is self-contained in the `<style>` tag—no external CSS files
-
-## Recent Updates & Deployment Status (April 2026)
-
-**Plugin v1.1 Created** ✅
-- Updated `KonversAItions Content Preview` plugin to v1.1
-- Plugin now serves main production routes (`/`, `/exit/`) in addition to preview routes (`/home-preview/`, `/exit-preview/`)
-- Allows full content override of the legacy `KonversAItions Raw HTML Pages` plugin
-
-**Content Changes Applied** ✅
-- Hero subhead updated to: "founders and executive teams unlock revenue, expand margins"
-- Section label changes:
-  - "Why AI. Why Now..." → "Why Growth Gets Stuck"
-  - "The Full Arc" → "How We Create Value"  
-  - "The Real AI Problem" → "Why Change Fails"
-- Exit page sector list updated to: "SaaS. Communications. Political Tech. Energy. Healthcare. Education"
-
-**Deployment Status** ⏸️
-- v1.1 plugin ZIP created and verified: `/tmp/konversaitions-content-preview.zip` (23.9KB)
-- **Blocker:** WordPress upload endpoint protected by CAPTCHA (prevents automated uploads)
-- **Solution:** Upload manually through WordPress Admin UI using browser file picker
-  
-**Next Steps:**
-1. Navigate to `https://konversaitions.com/wp-admin/plugin-install.php?tab=upload`
-2. Click "Choose File" and select the plugin ZIP
-3. Click "Install Now" to deploy v1.1
-4. Once activated, the site will serve updated content at `/` and `/exit/`
-
-## WordPress Plugin Details
-
-The site uses plugins for serving raw HTML:
-1. **KonversAItions Content Preview (currently v1.0, should upgrade to v1.1)** — Routes `/`, `/exit/`, `/home-preview/`, `/exit-preview/` to HTML files
-2. **KonversAItions Raw HTML Pages (v1.0)** — Legacy plugin for backward compatibility
-
-Plugin files are located in WordPress's `/wp-content/plugins/` directory on the server. To update:
-- Package updated HTML files with plugin PHP in a ZIP
-- Upload via WordPress Admin → Plugins → Add Plugin
-- Activate to override previous version
-
-## Testing
-
-- **Local Testing:** Open HTML files directly in any browser to check layout and styles
-- **Responsive Testing:** Use browser DevTools (F12) to test different viewport sizes
-- **Live Testing:** After deployment, visit `https://konversaitions.com/` and `/exit/` to verify changes are live
-- **Preview Routes:** Test at `/home-preview/` and `/exit-preview/` before publishing to main routes
+- Never put passwords, tokens or logins in any file, commit or chat.
+- Do not delete sections, pages or the PHP plugin file without asking.
+- Never change Cloudflare DNS or any Cloudflare setting other than the cache.
+- If something breaks, show `git log` and offer to roll back to the last good version.
 
 ## Troubleshooting
 
-**Plugin won't upload:**
-- Clear browser cache
-- Try uploading via private/incognito window
-- Check file permissions on uploaded ZIP
-- If CAPTCHA blocks, use browser file picker (manual upload)
-
-**Changes not appearing:**
-- Clear WordPress cache (if caching plugin is active)
-- Verify plugin is activated in WordPress Admin
-- Check that HTML file names match plugin PHP routing logic
-- Ensure no other plugins are conflicting with routing
-
-**Styling looks broken:**
-- Verify CSS custom properties are defined in `:root`
-- Check that all CSS is inline in the `<style>` tag (no external sheets)
-- Test in multiple browsers (Chrome, Safari, Firefox) for compatibility
-- Use browser DevTools to inspect and debug specific elements
+- Changes not showing: purge Cloudflare, confirm the plugin is active, confirm the ZIP held the new `home.html` and `exit.html`.
+- Links between pages 404 on the live site: the ZIP copies still contain local filenames. Rebuild with the link replacement.
+- Plugin will not upload: try a private window. The CAPTCHA blocks scripted uploads.
