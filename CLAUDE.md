@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code in the KonversAItions website repo. This file is the master copy of how the site is built, changed and published. Personal preferences live in CLAUDE.local.md (not committed).
+Guidance for Claude Code in the KonversAItions website repo (github.com/innovaite/konversations). This file is the master copy of how the site is built, changed and published. Personal preferences live in CLAUDE.local.md (not committed).
 
 ## Who this is for
 
@@ -10,21 +10,20 @@ The site owner, Elisa, manages konversaitions.com and is not a developer. Explai
 
 - `konversaitions_v16.html`: home page, served at `/` and `/home-preview/`
 - `konversaitions_exitV16.html`: exit page, served at `/exit/` and `/exit-preview/`
-- `konversaitions-content-preview.zip`: the WordPress plugin. Contains `konversaitions-content-preview/` with `konversaitions-content-preview.php` (v1.1 routing), `home.html` and `exit.html`.
+- `build_worker.py`: builds the Cloudflare Worker that serves both pages
+- `konversaitions-content-preview.zip`: archive only. The old WordPress plugin. WordPress is retired. Do not use or rebuild it.
 
-WordPress hosts the site but does not render it. The plugin intercepts `/`, `/exit/`, `/home-preview/` and `/exit-preview/` and serves `home.html` or `exit.html` raw. A legacy plugin, "KonversAItions Raw HTML Pages" v1.0, is also installed. Cloudflare sits in front and caches pages.
+Hosting is Cloudflare. A Worker named `konversaitions-site` serves the four page paths. Any other path passes through to the origin.
 
 Each HTML file is self-contained: inline `<style>`, CSS variables in `:root` (`--navy`, `--teal`, `--lteal`, `--gold`, `--surface`, `--on-navy`, `--on-navy-muted`, `--on-navy-faint`), Google Fonts Newsreader and Inter, responsive via `clamp()`, `vw` and `vmin`. Animation classes: `.fade`, `.fade.in`, `.d1` to `.d3`. Buttons: `.btn-*`.
 
+The home hero carries an inline SVG illustration (`.hero-art`): mountain ridges at sunrise, contour lines, a dashed route to a summit flag. Faded at 1100px and below, hidden at 900px and below.
+
 Do not add frameworks or external CSS or JavaScript libraries. Keep the existing colors, fonts and layout unless a design change is requested.
 
-### Links differ between source and ZIP
+### Links differ between source and live
 
-The source files link to each other by filename so they work when opened locally:
-- home links to `konversaitions_exitV16.html`
-- exit links to `konversaitions_v16.html`
-
-The copies inside the ZIP must use site paths instead: `/exit/` and `/`. A straight copy breaks navigation on the live site. The publish steps below handle this.
+The source files link to each other by filename so they work when opened locally. `build_worker.py` swaps them for `/exit/` and `/` and refuses to build if any local link remains. Never edit the links in the source files by hand.
 
 ## When asked for a change
 
@@ -32,40 +31,30 @@ The copies inside the ZIP must use site paths instead: `/exit/` and `/`. A strai
 2. Find the text or section meant. If more than one match, quote the matches and ask which one.
 3. Describe the change in plain words before making it.
 4. Edit the source HTML file.
-5. `open <file>` and say what to check, including how it looks at phone width (narrow the browser window, or Safari: Develop > Enter Responsive Design Mode).
+5. `open <file>` and say what to check, including phone width. Headless Chrome screenshots at 1440, 1000 and 390 px widths are a useful self-check (Chrome crops below about 500 px, so compare against a before shot).
 6. Commit with a clear message and `git push`. Every change is committed and pushed. Pushing to GitHub does not change the live site; only a publish does.
 
 ## When asked to "publish"
 
-1. Rebuild the ZIP in a temp folder:
-   - unzip the existing ZIP
-   - copy `konversaitions_v16.html` to `home.html` and `konversaitions_exitV16.html` to `exit.html`
-   - in `home.html` replace `href="konversaitions_exitV16.html"` with `href="/exit/"`
-   - in `exit.html` replace `href="konversaitions_v16.html"` with `href="/"`
-   - leave the PHP file untouched
-   - re-zip with `konversaitions-content-preview/` as the top folder
-2. Check before handing over: `grep` shows no `konversaitions_v16.html` or `konversaitions_exitV16.html` left in the ZIP copies, and the PHP file is byte-identical to the previous ZIP.
-3. Replace the repo ZIP, copy it to `~/Desktop`, commit and push.
-4. Walk through the upload one step at a time:
-   `konversaitions.com/wp-admin/plugin-install.php?tab=upload` > Choose File > the ZIP on the Desktop > Install Now > "Replace current with uploaded" > confirm the plugin is active. The upload page has a CAPTCHA, so it is always done by hand in the browser.
-5. When told it is uploaded, purge the Cloudflare cache. The token is in the macOS keychain. Read it inside the command and never print, echo or save it:
-   ```
-   TOKEN=$(security find-generic-password -s cloudflare-konv-purge -w)
-   ZONE=$(curl -s -H "Authorization: Bearer $TOKEN" "https://api.cloudflare.com/client/v4/zones?name=konversaitions.com" | python3 -c 'import sys,json;print(json.load(sys.stdin)["result"][0]["id"])')
-   curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "https://api.cloudflare.com/client/v4/zones/$ZONE/purge_cache" --data '{"purge_everything":true}' | python3 -c 'import sys,json;d=json.load(sys.stdin);print("Purge succeeded" if d.get("success") else d.get("errors"))'
-   ```
-   Run all three lines in one shell call. Report whether it succeeded. If the API fails, walk through Cloudflare dashboard > konversaitions.com > Caching > Configuration > Purge Everything.
-6. Have the owner check `/home-preview/` and `/exit-preview/`, then `/` and `/exit/`, including the links between the two pages.
+Two tokens live in the macOS keychain. Read them inside the command, pass them to curl through `-K -` on stdin (never on the command line), and never print, echo or save them.
+- `cloudflare-konv-deploy`: Workers upload and routes
+- `cloudflare-konv-purge`: cache purge and zone lookup
+
+Steps:
+1. `python3 -I build_worker.py <scratchpad>/worker.js`
+2. Upload: `PUT /accounts/<account_id>/workers/scripts/konversaitions-site`, multipart with `metadata` = `{"main_module":"worker.js","compatibility_date":"2026-10-01"}` and `worker.js` as `application/javascript+module`. Get the account ID from `GET /zones?name=konversaitions.com`.
+3. Routes (first publish only, and only after the owner approves the preview): `konversaitions.com/`, `konversaitions.com/exit*`, `konversaitions.com/home-preview*`, `konversaitions.com/exit-preview*`, all to `konversaitions-site`.
+4. Purge the cache: `POST /zones/<zone_id>/purge_cache` with `{"purge_everything":true}`. If the API fails, walk through Cloudflare dashboard > konversaitions.com > Caching > Configuration > Purge Everything.
+5. Check from the terminal that `/` and `/exit/` serve the new text, then have the owner check `/`, `/exit/` and the links between them.
 
 ## Rules
 
 - Never put passwords, tokens or logins in any file, commit or chat.
-- Do not delete sections, pages or the PHP plugin file without asking.
-- Never change Cloudflare DNS or any Cloudflare setting other than the cache.
-- If something breaks, show `git log` and offer to roll back to the last good version.
+- Do not delete sections or pages without asking.
+- On Cloudflare, only upload the `konversaitions-site` Worker, manage its routes on konversaitions.com, and purge the cache. Never change DNS or any other setting.
+- If something breaks, show `git log` and offer to roll back. On Cloudflare, removing the Worker routes returns the four paths to the origin.
 
-## Troubleshooting
+## Status and open items (2026-11-17)
 
-- Changes not showing: purge Cloudflare, confirm the plugin is active, confirm the ZIP held the new `home.html` and `exit.html`.
-- Links between pages 404 on the live site: the ZIP copies still contain local filenames. Rebuild with the link replacement.
-- Plugin will not upload: try a private window. The CAPTCHA blocks scripted uploads.
+- The Worker has never been uploaded. The deploy token sees the konversaitions.com zone but no account, and Cloudflare refuses the upload with "No access to the specified resource". It needs an account-level policy for the account that owns the zone, with Workers Scripts: Edit. Owner: Elisa, or the Cloudflare account owner if Elisa's login has zone-only access.
+- As of 2026-11-17 the live site still answers from a PHP origin (`x-httpd-modphp: 1`, WordPress-style no-cache header) with older content. Once the Worker routes are live, `/` and `/exit/` stop depending on it. Who runs that origin, and whether anything else on it is still needed, is unconfirmed.
