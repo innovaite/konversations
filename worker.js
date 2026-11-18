@@ -2,7 +2,7 @@
 // Publishing = set SHA to the commit to publish, then upload this file.
 // Pages come from jsDelivr's copy of the public GitHub repo at that exact commit,
 // so a published version never changes underneath the site.
-const SHA = "e8cbeb5d9f8902cb6dc1af2ec3e3028a0c454b05";
+const SHA = "b5da3bb86231b0b288d5ce747a1988cb8f3309b0";
 const SRC = `https://cdn.jsdelivr.net/gh/innovaite/konversations@${SHA}/`;
 
 const PAGES = {
