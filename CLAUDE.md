@@ -10,7 +10,7 @@ The site owner, Elisa, manages konversaitions.com and is not a developer. Explai
 
 - `konversaitions_v16.html`: home page, served at `/` and `/home-preview/`
 - `konversaitions_exitV16.html`: exit page, served at `/exit/` and `/exit-preview/`
-- `build_worker.py`: builds the Cloudflare Worker that serves both pages
+- `worker.js`: the Cloudflare Worker that serves both pages. It pins one commit (`SHA`) and fetches the pages for that commit from jsDelivr's copy of this public GitHub repo, then caches them.
 - `konversaitions-content-preview.zip`: archive only. The old WordPress plugin. WordPress is retired. Do not use or rebuild it.
 
 Hosting is Cloudflare. A Worker named `konversaitions-site` serves the four page paths. Any other path passes through to the origin.
@@ -23,7 +23,7 @@ Do not add frameworks or external CSS or JavaScript libraries. Keep the existing
 
 ### Links differ between source and live
 
-The source files link to each other by filename so they work when opened locally. `build_worker.py` swaps them for `/exit/` and `/` and refuses to build if any local link remains. Never edit the links in the source files by hand.
+The source files link to each other by filename so they work when opened locally. `worker.js` swaps them for `/exit/` and `/` as it serves them. Never edit the links in the source files by hand.
 
 ## When asked for a change
 
@@ -36,16 +36,17 @@ The source files link to each other by filename so they work when opened locally
 
 ## When asked to "publish"
 
-Two tokens live in the macOS keychain. Read them inside the command, pass them to curl through `-K -` on stdin (never on the command line), and never print, echo or save them.
-- `cloudflare-konv-deploy`: Workers upload and routes
-- `cloudflare-konv-purge`: cache purge and zone lookup
+Publishing goes through the Cloudflare connector in Claude Code (`mcp__cloudflare__execute`, signed in as Elisa). The keychain tokens are a fallback: `cloudflare-konv-purge` purges the cache; `cloudflare-konv-deploy` has zone-level rights only. Never print, echo or save a token; pass it to curl through `-K -`.
 
-Steps:
-1. `python3 -I build_worker.py <scratchpad>/worker.js`
-2. Upload: `PUT /accounts/<account_id>/workers/scripts/konversaitions-site`, multipart with `metadata` = `{"main_module":"worker.js","compatibility_date":"2026-10-01"}` and `worker.js` as `application/javascript+module`. Get the account ID from `GET /zones?name=konversaitions.com`.
-3. Routes (first publish only, and only after the owner approves the preview): `konversaitions.com/`, `konversaitions.com/exit*`, `konversaitions.com/home-preview*`, `konversaitions.com/exit-preview*`, all to `konversaitions-site`.
-4. Purge the cache: `POST /zones/<zone_id>/purge_cache` with `{"purge_everything":true}`. If the API fails, walk through Cloudflare dashboard > konversaitions.com > Caching > Configuration > Purge Everything.
-5. Check from the terminal that `/` and `/exit/` serve the new text, then have the owner check `/`, `/exit/` and the links between them.
+1. Make sure the changes are committed and pushed. Note the full commit hash (`git rev-parse HEAD`).
+2. Check jsDelivr serves that commit byte for byte: compare `shasum -a 256` of `https://cdn.jsdelivr.net/gh/innovaite/konversations@<hash>/<file>` with the local file, for both pages.
+3. Set `SHA` in `worker.js` to that hash, commit and push.
+4. Upload `worker.js` with the connector: `PUT /accounts/<account>/workers/scripts/konversaitions-site`, multipart, metadata `{"main_module":"worker.js","compatibility_date":"2026-10-01"}`. Check the uploaded text's SHA-256 inside the call before sending.
+5. Check the preview with curl: `https://konversaitions-site.konversaitions.workers.dev/` and `/exit/` show the new text and no local file links.
+6. Purge the konversaitions.com cache: `POST /zones/47b56f954e8fce8ce86be68ea3756685/purge_cache` with `{"purge_everything":true}`.
+7. Check `/` and `/exit/` on konversaitions.com, then have the owner look.
+
+Routes (one-time, only with the owner's approval): `konversaitions.com/`, `konversaitions.com/exit*`, `konversaitions.com/home-preview*`, `konversaitions.com/exit-preview*`, all to `konversaitions-site`. A route can only point at a Worker in the same account as the zone.
 
 ## Rules
 
@@ -56,5 +57,6 @@ Steps:
 
 ## Status and open items (2026-11-17)
 
-- The Worker has never been uploaded. The deploy token sees the konversaitions.com zone but no account, and Cloudflare refuses the upload with "No access to the specified resource". It needs an account-level policy for the account that owns the zone, with Workers Scripts: Edit. Owner: Elisa, or the Cloudflare account owner if Elisa's login has zone-only access.
-- As of 2026-11-17 the live site still answers from a PHP origin (`x-httpd-modphp: 1`, WordPress-style no-cache header) with older content. Once the Worker routes are live, `/` and `/exit/` stop depending on it. Who runs that origin, and whether anything else on it is still needed, is unconfirmed.
+- The konversaitions.com zone lives in a Cloudflare account Elisa does not own (ID starts `5f0fce`). Her role there is Domain Administrator plus Workers Routes Write, with no right to create Workers. Upload there fails with "No access to the specified resource". Fix: the account owner gives Elisa's login a Workers role (for example Workers Admin). Owner: the account owner.
+- Until then `konversaitions-site` runs in Elisa's own account (ID starts `1271ef`) as a preview only, at https://konversaitions-site.konversaitions.workers.dev. It cannot be routed to konversaitions.com from there.
+- The live site still answers from a PHP origin (`x-httpd-modphp: 1`) with older content. Who runs it, and whether anything else on it is still needed, is unconfirmed.
