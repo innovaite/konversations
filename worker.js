@@ -2,7 +2,7 @@
 // Publishing = set SHA to the commit to publish, then upload this file.
 // Pages come from jsDelivr's copy of the public GitHub repo at that exact commit,
 // so a published version never changes underneath the site.
-const SHA = "b5da3bb86231b0b288d5ce747a1988cb8f3309b0";
+const SHA = "292cc8ae9c6fdcf58c11b343ae425aac63a13215";
 const SRC = `https://cdn.jsdelivr.net/gh/innovaite/konversations@${SHA}/`;
 
 const PAGES = {
@@ -14,7 +14,7 @@ const PAGES = {
 
 // Images referenced by the pages, served from the same pinned commit.
 const ASSETS = {
-  "/hero-kilimanjaro.jpg": ["hero-kilimanjaro.jpg", "image/jpeg"],
+  "/hero-jungfrau.jpg": ["hero-jungfrau.jpg", "image/jpeg"],
 };
 
 // Source files link to each other by filename; the live site uses paths.
@@ -43,7 +43,7 @@ export default {
       const src = await fetch(SRC + file, { cf: { cacheTtl: 31536000, cacheEverything: true } });
       if (!src.ok) return new Response("Page temporarily unavailable", { status: 503 });
       res = new Response(fixLinks(await src.text()), {
-        headers: { "content-type": "text/html; charset=UTF-8", "cache-control": "public, max-age=300" },
+        headers: { "content-type": "text/html; charset=UTF-8", "cache-control": "public, max-age=0, must-revalidate" },
       });
       ctx.waitUntil(cache.put(key, res.clone()));
     }
