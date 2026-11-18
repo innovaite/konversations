@@ -12,6 +12,11 @@ const PAGES = {
   "/exit-preview/": "konversaitions_exitV16.html",
 };
 
+// Images referenced by the pages, served from the same pinned commit.
+const ASSETS = {
+  "/hero-kilimanjaro.jpg": ["hero-kilimanjaro.jpg", "image/jpeg"],
+};
+
 // Source files link to each other by filename; the live site uses paths.
 const fixLinks = (html) => html
   .replaceAll('href="konversaitions_exitV16.html"', 'href="/exit/"')
@@ -21,6 +26,12 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     let path = url.pathname;
+    const asset = ASSETS[path];
+    if (asset) {
+      const img = await fetch(SRC + asset[0], { cf: { cacheTtl: 31536000, cacheEverything: true } });
+      if (!img.ok) return new Response("Not found", { status: 404 });
+      return new Response(img.body, { headers: { "content-type": asset[1], "cache-control": "public, max-age=86400" } });
+    }
     if (path !== "/" && !path.endsWith("/")) path += "/";
     const file = PAGES[path];
     if (!file) return fetch(request);
